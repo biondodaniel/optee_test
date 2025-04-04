@@ -48,16 +48,20 @@ static TEE_Result test_with_right_parameters(void)
 	unsigned char *digestptr = NULL;
 	unsigned int i = 0;
 
+	EMSG("\n\nINIZIALIZZA PARAMS --> %zu \n\n", LOG_SIZE);
+
 	params[0].memref.buffer = (void *)buf;
 	params[0].memref.size = LOG_SIZE;
 
+	EMSG("\nFINE - INIZIALIZZA PARAMS --> %zu \n\n", params[0].memref.size);
+
 	if (invoke_system_pta(PTA_SYSTEM_GET_TPM_EVENT_LOG,
 			      param_types, params) == TEE_SUCCESS) {
-		DMSG("Received %i bytes of event log", params[0].memref.size);
-		DMSG("Parsing the event log header:");
+		EMSG("Received %i bytes of event log", params[0].memref.size);
+		EMSG("Parsing the event log header:");
 
 		memcpy(&field, &buf[0], sizeof(uint32_t));
-		DMSG("\tPCRIndex = 0x%" PRIx32, field);
+		EMSG("\tPCRIndex = 0x%" PRIx32, field);
 
 		/*
 		 * PCR Index must be 0 on the header.
@@ -70,7 +74,7 @@ static TEE_Result test_with_right_parameters(void)
 		}
 
 		memcpy(&field, &buf[4], sizeof(uint32_t));
-		DMSG("\tEventType = 0x%" PRIx32, field);
+		EMSG("\tEventType = 0x%" PRIx32, field);
 
 		/*
 		 * Event type must be EV_NO_ACTION on the header.
@@ -95,7 +99,7 @@ static TEE_Result test_with_right_parameters(void)
 			}
 		}
 
-		DMSG("--> Digest value passed");
+		EMSG("--> Digest value passed");
 		return TEE_SUCCESS;
 	}
 	return TEE_ERROR_ACCESS_DENIED;
